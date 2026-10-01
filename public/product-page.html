@@ -190,7 +190,7 @@
 
 <script>
 /* ══════════════════════════════════════════════════════════════
-   KK WEBCODES — CONFIG · all 4 Stripe links LIVE
+   KK WEBCODES — CONFIG · 3 tiers LIVE
    ══════════════════════════════════════════════════════════════ */
 const CONFIG = {
   STORE_NAME: 'KK WebCodes',
@@ -198,8 +198,7 @@ const CONFIG = {
   PIRACY_EMAIL: 'piracy@pnmoneymaking.com',
   WHATSAPP_NUMBER: '14255245834',
   STRIPE_LINKS: {
-    single:   'https://buy.stripe.com/00w3cweiE6x8dcecNi2B20d',   // $79     · Single Career Bundle
-    triple:   'https://buy.stripe.com/bJeaEY5M84p03BE7sY2B20e',   // $197    · 3-Career Bundle
+    single:   'https://buy.stripe.com/00w3cweiE6x8dcecNi2B20d',   // $99     · Single Career Bundle
     category: 'https://buy.stripe.com/6oU00kb6s08K8VY8x22B20f',   // $597    · Category Bundle
     vault:    'https://buy.stripe.com/14AdRa8Ykg7I7RUeVq2B20g'    // $1,997  · Full Agency Vault
   },
@@ -208,7 +207,7 @@ const CONFIG = {
 
 const TIERS = {
   single: {
-    id:'single', name:'Single Career Bundle', price:79, tag:'Entry',
+    id:'single', name:'Single Career Bundle', price:99, tag:'Entry',
     blurb:'One career. 3 full designs. Every file. Unlimited rebrand rights.',
     perks:[
       '3 complete website designs for one career',
@@ -217,19 +216,6 @@ const TIERS = {
       'README setup guide + license certificate',
       'SEO robots.txt & sitemap.xml',
       'Lifetime access · free updates'
-    ],
-    highlight:false
-  },
-  triple: {
-    id:'triple', name:'3-Career Bundle', price:197, tag:'New',
-    blurb:'Pick any 3 careers of your choice — 3 designs each = 9 websites.',
-    perks:[
-      '3 credits — spend on any 3 careers you choose',
-      'Each credit unlocks 3 designs for one career',
-      '9 complete websites total (3 careers × 3 designs)',
-      'Master README + multi-career deploy guide',
-      'Commercial rebrand rights for clients',
-      'Credits never expire · use them any time'
     ],
     highlight:false
   },
@@ -1792,8 +1778,7 @@ const BLOG_POSTS = [
 const aiKnowledge = [
   {keywords:['hello','hi','hey','help','support'],answer:"Hi! 👋 I'm KK Support.\n\nAsk me about pricing, the 3 design variants, downloads, licensing, or how to deploy.",quick:['What do I get?','3 designs?','Pricing','License terms']},
   {keywords:['3 design','three design','variant','different design','how many design'],answer:"**3 genuinely different designs per career:**\n\n🎨 **Modern** — gradient hero, floating form card, soft rounded cards\n📖 **Classic** — editorial single-column, serif typography, minimal\n⚡ **Bold** — full-bleed accent hero, dark sections, high contrast\n\nEach has its own accent colour, so they look distinctly different. Preview all three free.",quick:['Preview a career','Pricing','What do I get?']},
-  {keywords:['price','cost','pricing','how much','$'],answer:"**Four tiers:**\n\n• Single Career — **$79** (3 designs)\n• 3-Career Bundle — **$197** (3 credits — unlock any 3 careers you choose)\n• Category Bundle (up to 120 careers × 3) — **$597**\n• Full Agency Vault (all 1,000 × 3 = 3,000 websites) — **$1,997**\n\nOne-time payment. No subscription.",quick:['What do I get?','Full Vault','Refund policy']},
-  {keywords:['credit','3-career','triple'],answer:"**3-Career Bundle — $197**\n\nYou get **3 credits**. Each credit unlocks one career (3 designs, 21 files).\n\nClick **Buy** on any career → confirm → done. Credits never expire.\n\nTrack your balance in **My Library**.",quick:['Pricing','My Library','Refund policy']},
+  {keywords:['price','cost','pricing','how much','$'],answer:"**Three tiers:**\n\n• Single Career — **$99** (3 designs)\n• Category Bundle (up to 120 careers × 3) — **$597**\n• Full Agency Vault (all 1,000 × 3 = 3,000 websites) — **$1,997**\n\nOne-time payment. No subscription.",quick:['What do I get?','Full Vault','Refund policy']},
   {keywords:['what do i get','bundle','include','files','inside'],answer:"**Per design variant, you get 7 files:**\n\n📄 `index.html` — full website\n🎯 `funnel.html` — lead capture page\n✅ `thank-you.html` — opt-in confirmation\n📘 `README.md` — setup guide\n⚖️ `LICENSE.txt` — your rights\n🤖 `robots.txt` + `sitemap.xml`\n\n× 3 designs = **21 files per career.**",quick:['3 designs?','Preview a career','Deploy help']},
   {keywords:['preview','see','demo','look','try'],answer:"**Yes — free live previews of all 3 designs.**\n\nClick **Preview** on any career. Three tabs at the top switch between Modern, Classic and Bold instantly. No payment required.",quick:['Pricing','Buy a bundle']},
   {keywords:['download','zip','how do i get','delivery'],answer:"**Instant ZIP download** after purchase.\n\nYou can download:\n• All 3 designs in one ZIP\n• Just one design (Modern / Classic / Bold)\n• Individual files\n\nGo to **My Library** → pick your career → **Download**.",quick:['3 designs?','Deploy help']},
@@ -1826,6 +1811,9 @@ function updatePurchasedCount(){ const el = document.getElementById('purchasedCo
 
 function hasVault(){ return !!purchases['__VAULT']; }
 function hasCategory(catId){ return !!purchases['__CAT_' + catId] || hasVault(); }
+
+/* Legacy 3-Career Bundle support — kept dormant for buyers who purchased before
+   the tier was removed. New buyers cannot reach this path. */
 function getTripleCreditsUsed(){
   const t = purchases['__TRIPLE'];
   if (!t || !t.careers) return [];
@@ -1842,7 +1830,6 @@ function tripleHasCareer(careerName){
   if (!t || !t.careers) return false;
   return t.careers.includes(careerName);
 }
-function hasTripleBundle(){ return !!purchases['__TRIPLE']; }
 
 function isPurchased(careerName, catId){
   if (purchases[careerName]) return true;
@@ -1859,12 +1846,6 @@ function grant(tier, ref){
     purchases['__VAULT'] = entry;
   } else if (tier === 'category'){
     purchases['__CAT_' + ref] = entry;
-  } else if (tier === 'triple'){
-    entry.careers = [];
-    if (ref && ALL_CAREERS.some(c => c.name === ref)){
-      entry.careers.push(ref);
-    }
-    purchases['__TRIPLE'] = entry;
   } else if (ref){
     purchases[ref] = entry;
   }
@@ -1876,17 +1857,10 @@ function checkReturnFromStripe(){
   if (p.get('paid') === '1'){
     const tier = p.get('tier') || 'single';
     let ref = p.get('ref') || '';
-    if (ref.includes('{') || ref === 'triple' || ref === 'vault' || ref === 'single' || ref === 'category') ref = '';
+    if (ref.includes('{') || ref === 'vault' || ref === 'single' || ref === 'category') ref = '';
     grant(tier, ref);
     window.history.replaceState({}, '', window.location.pathname + window.location.hash);
-    let msg = '🎉 Payment confirmed — your bundle is unlocked';
-    if (tier === 'triple'){
-      const remaining = getTripleRemaining();
-      msg = remaining === 3
-        ? '🎉 Payment confirmed — you have 3 credits. Click Buy on any career to spend them.'
-        : '🎉 Payment confirmed — 1 credit auto-used. ' + remaining + ' remaining.';
-    }
-    setTimeout(() => showToast(msg), 700);
+    setTimeout(() => showToast('🎉 Payment confirmed — your bundle is unlocked'), 700);
   }
 }
 
@@ -1936,7 +1910,7 @@ function renderHome(){
     <div class="max-w-5xl mx-auto px-4 sm:px-6 text-center">
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 border border-amber-300 text-amber-800 text-xs font-semibold mb-6">
         <i class="fa-solid fa-bolt text-amber-600"></i>
-        <span>3 complete designs per career · Preview free · From $79</span>
+        <span>3 complete designs per career · Preview free · From $99</span>
       </div>
       <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-5 display">
         3 Done-For-You Websites<br>
@@ -1960,7 +1934,7 @@ function renderHome(){
           <div class="text-xs text-slate-500 font-semibold">Total websites</div>
         </div>
         <div class="p-4 rounded-xl bg-white border border-amber-100 shadow-sm">
-          <div class="text-amber-500 font-black text-2xl mb-1">$79</div>
+          <div class="text-amber-500 font-black text-2xl mb-1">$99</div>
           <div class="text-xs text-slate-500 font-semibold">Starting price</div>
         </div>
       </div>
@@ -2073,7 +2047,7 @@ function buildCategoryInner(cat, list){
     const owned = isPurchased(career, cat.id);
     const badge = owned
       ? `<span class="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-300 px-2 py-0.5 rounded-full whitespace-nowrap"><i class="fa-solid fa-check mr-0.5"></i>Owned</span>`
-      : `<span class="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full whitespace-nowrap">3 designs · $79</span>`;
+      : `<span class="text-[9px] font-bold text-amber-700 bg-amber-50 border border-amber-300 px-2 py-0.5 rounded-full whitespace-nowrap">3 designs · $99</span>`;
     const sC = career.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     html += `
       <div class="row-card flex items-center justify-between gap-2 p-3 rounded-xl bg-sky-50/60 border border-sky-100">
@@ -2147,8 +2121,8 @@ function openPreview(career, catId){
           <button onclick="${owned ? `closeModal(); openCareerDownload('${safe}', ${catId})` : `closeModal(); openTierModal('single', ${catId}, '${safe}')`}"
             class="px-3 sm:px-4 py-2 rounded-xl ${owned ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600'} text-white text-[11px] font-bold transition flex items-center gap-1.5 shadow-sm">
             <i class="fa-solid ${owned ? 'fa-download' : 'fa-cart-shopping'} text-[10px]"></i>
-            <span class="hidden sm:inline">${owned ? 'Download all 3' : 'Get all 3 — $79'}</span>
-            <span class="sm:hidden">${owned ? 'ZIP' : '$79'}</span>
+            <span class="hidden sm:inline">${owned ? 'Download all 3' : 'Get all 3 — $99'}</span>
+            <span class="sm:hidden">${owned ? 'ZIP' : '$99'}</span>
           </button>
           <button onclick="closeModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
             <i class="fa-solid fa-xmark"></i>
@@ -2224,6 +2198,7 @@ function openTierModal(tier, catId, careerName, skipCreditCheck){
   currentCategoryId = catId || null;
   currentCareer = careerName || null;
 
+  // Legacy: buyers with dormant triple credits can still spend them
   if (!skipCreditCheck && careerName && getTripleRemaining() > 0 && !isPurchased(careerName, catId)){
     showUseCreditModal(careerName, catId);
     return;
@@ -2239,7 +2214,6 @@ function openTierModal(tier, catId, careerName, skipCreditCheck){
     return `
     <button onclick="selectTier('${t.id}')" id="tier-${t.id}" class="tier-card ${isSel ? 'selected' : ''} w-full text-left border-2 border-sky-200 rounded-2xl p-4 bg-white relative">
       ${t.highlight ? `<span class="absolute -top-2.5 left-4 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[9px] font-black uppercase tracking-wider">${t.tag}</span>` : ''}
-      ${t.id === 'triple' ? `<span class="absolute -top-2.5 right-4 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white text-[9px] font-black uppercase tracking-wider">${t.tag}</span>` : ''}
       <div class="flex items-start justify-between gap-3 mb-2">
         <div class="min-w-0">
           <p class="text-[13px] font-black text-slate-900 leading-tight">${t.name}</p>
@@ -2296,6 +2270,7 @@ function openTierModal(tier, catId, careerName, skipCreditCheck){
   document.body.style.overflow = 'hidden';
 }
 
+/* Legacy — dormant 3-Career Bundle credit spending (only reachable by pre-existing buyers) */
 function showUseCreditModal(careerName, catId){
   const remaining = getTripleRemaining();
   const safe = careerName.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
@@ -2310,7 +2285,7 @@ function showUseCreditModal(careerName, catId){
           <i class="fa-solid fa-ticket"></i>
         </div>
         <h2 class="text-2xl font-black text-slate-900 display">Use a credit?</h2>
-        <p class="text-slate-600 text-sm mt-2">You have <strong class="text-emerald-600">${remaining} credit${remaining===1?'':'s'}</strong> remaining in your 3-Career Bundle.</p>
+        <p class="text-slate-600 text-sm mt-2">You have <strong class="text-emerald-600">${remaining} credit${remaining===1?'':'s'}</strong> remaining from your prior 3-Career Bundle.</p>
         <p class="text-slate-500 text-[12px] mt-3">Unlock <strong class="text-sky-700">${careerName}</strong> now and use 1 credit?</p>
       </div>
       <button onclick="useTripleCreditAndUnlock('${safe}', ${catId})" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-sm transition mb-2">
@@ -2327,7 +2302,7 @@ function showUseCreditModal(careerName, catId){
 
 function useTripleCreditAndUnlock(careerName, catId){
   const t = purchases['__TRIPLE'];
-  if (!t){ showToast('⚠️ No bundle found'); return; }
+  if (!t){ showToast('⚠️ No legacy bundle found'); return; }
   if (!t.careers) t.careers = [];
   if (t.careers.includes(careerName)){
     closeModal();
@@ -2335,7 +2310,7 @@ function useTripleCreditAndUnlock(careerName, catId){
     return;
   }
   if (t.careers.length >= 3){
-    showToast('⚠️ All 3 credits used. Upgrade for more.');
+    showToast('⚠️ All 3 legacy credits used.');
     return;
   }
   t.careers.push(careerName);
@@ -2394,7 +2369,7 @@ function checkout(){
   }
 
   if (CONFIG.DEMO_MODE){
-    const ref = tierId === 'single' ? (currentCareer || 'Sample Career') : (tierId === 'category' ? String(currentCategoryId || 1) : (tierId === 'triple' ? (currentCareer || '') : null));
+    const ref = tierId === 'single' ? (currentCareer || 'Sample Career') : (tierId === 'category' ? String(currentCategoryId || 1) : null);
     grant(tierId, ref);
     closeModal();
     showToast('🧪 Demo mode — access granted instantly');
@@ -2404,7 +2379,6 @@ function checkout(){
   let ref = '';
   if (tierId === 'single') ref = currentCareer || '';
   else if (tierId === 'category') ref = String(currentCategoryId || '');
-  else if (tierId === 'triple') ref = currentCareer || '';
 
   const url = base + (base.includes('?') ? '&' : '?')
     + 'client_reference_id=' + encodeURIComponent(ref || tierId)
@@ -2655,7 +2629,7 @@ function openMyLibrary(){
   const careerKeys = keys.filter(k => !k.startsWith('__'));
   const catKeys = keys.filter(k => k.startsWith('__CAT_')).map(k => parseInt(k.replace('__CAT_',''),10));
   const vault = hasVault();
-  const triple = hasTripleBundle();
+  const legacyTriple = !!purchases['__TRIPLE'];
 
   let body = '';
   if (vault){
@@ -2680,31 +2654,31 @@ function openMyLibrary(){
     </div>`;
   }
 
-  if (triple && !vault){
+  if (legacyTriple && !vault){
     const used = getTripleCreditsUsed();
     const remaining = getTripleRemaining();
-    body += `
-    <div class="border-2 border-emerald-300 rounded-2xl p-4 bg-gradient-to-br from-emerald-50 to-white mb-4">
-      <div class="flex items-start justify-between gap-3 mb-3">
-        <div>
-          <p class="text-sm font-black text-slate-900"><i class="fa-solid fa-ticket text-emerald-600 mr-1.5"></i>3-Career Bundle</p>
-          <p class="text-[11px] text-slate-500 mt-0.5"><strong class="text-emerald-700">${remaining} of 3 credits</strong> remaining</p>
-          <p class="text-[10px] mono text-sky-700 mt-1">License ID: ${purchases['__TRIPLE'].licenseId}</p>
+    if (remaining > 0){
+      body += `
+      <div class="border-2 border-emerald-300 rounded-2xl p-4 bg-gradient-to-br from-emerald-50 to-white mb-4">
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <div>
+            <p class="text-sm font-black text-slate-900"><i class="fa-solid fa-ticket text-emerald-600 mr-1.5"></i>Legacy 3-Career Bundle</p>
+            <p class="text-[11px] text-slate-500 mt-0.5"><strong class="text-emerald-700">${remaining} of 3 credits</strong> remaining</p>
+            <p class="text-[10px] mono text-sky-700 mt-1">License ID: ${purchases['__TRIPLE'].licenseId}</p>
+          </div>
+          <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
         </div>
-        <i class="fa-solid fa-circle-check text-emerald-500 text-lg"></i>
-      </div>
-      ${used.length > 0 ? `
-        <div class="bg-white border border-emerald-200 rounded-lg p-3 mt-2">
-          <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-2">Careers unlocked</p>
-          <ul class="space-y-1">
-            ${used.map(n => `<li class="text-[11px] text-slate-700 flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i>${n}</li>`).join('')}
-          </ul>
-        </div>
-      ` : ''}
-      ${remaining > 0
-        ? `<p class="text-[11px] text-emerald-700 mt-3"><i class="fa-solid fa-lightbulb mr-1"></i>Click <strong>Buy</strong> on any career to spend a credit.</p>`
-        : `<p class="text-[11px] text-amber-700 mt-3"><i class="fa-solid fa-arrow-up mr-1"></i>All credits used. <a href="#/bundles" onclick="closeModal()" class="underline font-bold">Upgrade to Category Bundle</a> for more.</p>`}
-    </div>`;
+        ${used.length > 0 ? `
+          <div class="bg-white border border-emerald-200 rounded-lg p-3 mt-2">
+            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-2">Careers unlocked</p>
+            <ul class="space-y-1">
+              ${used.map(n => `<li class="text-[11px] text-slate-700 flex items-center gap-2"><i class="fa-solid fa-check text-emerald-500 text-[9px]"></i>${n}</li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+        <p class="text-[11px] text-emerald-700 mt-3"><i class="fa-solid fa-lightbulb mr-1"></i>Click <strong>Buy</strong> on any career to spend a credit.</p>
+      </div>`;
+    }
   }
 
   if (vault || catKeys.length > 0){
@@ -2758,42 +2732,12 @@ function openMyLibrary(){
     });
   }
 
-  if (triple && !vault){
-    const usedViaTriple = getTripleCreditsUsed();
-    if (usedViaTriple.length > 0){
-      body += `<p class="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-2 mt-4">Unlocked via 3-Career Bundle</p>`;
-      usedViaTriple.forEach(name => {
-        const entry = ALL_CAREERS.find(c => c.name === name);
-        const catId = entry ? entry.categoryId : 1;
-        const safe = name.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-        body += `
-        <div class="border border-emerald-200 rounded-xl p-4 bg-gradient-to-br from-emerald-50 to-white mb-2">
-          <div class="flex items-start justify-between mb-2.5">
-            <div class="min-w-0">
-              <p class="text-sm font-bold text-slate-900 truncate">${name}</p>
-              <p class="text-[10px] text-slate-500">3 designs · Unlocked with a credit</p>
-            </div>
-            <i class="fa-solid fa-ticket text-emerald-500 shrink-0"></i>
-          </div>
-          <div class="flex gap-1.5">
-            <button onclick="closeModal(); openPreview('${safe}', ${catId})" class="flex-1 bg-white border border-sky-300 hover:border-sky-500 text-sky-700 text-[11px] font-bold py-2 rounded-lg transition">
-              <i class="fa-solid fa-eye mr-1"></i>Preview
-            </button>
-            <button onclick="closeModal(); openCareerDownload('${safe}', ${catId})" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold py-2 rounded-lg transition">
-              <i class="fa-solid fa-download mr-1"></i>Download
-            </button>
-          </div>
-        </div>`;
-      });
-    }
-  }
-
   if (!body){
     body = `
     <div class="text-center py-12">
       <i class="fa-solid fa-folder-open text-slate-300 text-5xl mb-4"></i>
       <p class="text-slate-600 text-sm font-semibold">Your library is empty.</p>
-      <p class="text-slate-400 text-[12px] mt-1 mb-5">Preview any build free — then grab 3 designs for $79.</p>
+      <p class="text-slate-400 text-[12px] mt-1 mb-5">Preview any build free — then grab 3 designs for $99.</p>
       <button onclick="closeModal(); document.getElementById('careerSearch') && document.getElementById('careerSearch').focus()" class="bg-sky-600 hover:bg-sky-500 text-white text-[12px] font-bold py-2.5 px-5 rounded-lg transition">
         <i class="fa-solid fa-magnifying-glass mr-1.5"></i>Browse the catalog
       </button>
@@ -2833,7 +2777,7 @@ function renderBundles(){
       <p class="text-lg text-slate-600 max-w-2xl mx-auto">Every career ships with 3 complete designs. Preview all three free before you pay.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
       ${Object.values(TIERS).map(t => `
         <div class="relative bg-white border-2 ${t.highlight ? 'border-sky-500 shadow-xl shadow-sky-500/10' : 'border-sky-200'} rounded-3xl p-5 flex flex-col">
           ${t.highlight ? '<span class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-white text-[10px] font-black uppercase tracking-wider whitespace-nowrap">Best Value</span>' : ''}
@@ -2918,7 +2862,7 @@ function renderBlog(){
     <div class="mt-16 bg-gradient-to-r from-sky-100 to-white border-2 border-sky-400 rounded-3xl p-8 sm:p-12 text-center">
       <div class="text-4xl mb-3">💻</div>
       <h2 class="display text-2xl sm:text-3xl font-black text-slate-900 mb-3">Ready to ship something?</h2>
-      <p class="text-slate-600 max-w-xl mx-auto mb-6">Preview any of the ${TOTAL_CAREERS} career builds free — 3 designs each — then grab the full source from $79.</p>
+      <p class="text-slate-600 max-w-xl mx-auto mb-6">Preview any of the ${TOTAL_CAREERS} career builds free — 3 designs each — then grab the full source from $99.</p>
       <a href="#/" class="inline-block bg-gradient-to-r from-sky-600 to-sky-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg">Browse the catalog →</a>
     </div>
   </section>`;
@@ -2950,7 +2894,7 @@ function renderBlogPost(slug){
     <div class="mt-12 bg-gradient-to-r from-sky-100 to-white border border-sky-300 rounded-2xl p-6 text-center">
       <div class="text-3xl mb-2">💻</div>
       <p class="text-sm font-bold text-slate-900 mb-1">3 designs per career, ready to ship</p>
-      <p class="text-xs text-slate-600 mb-4">${TOTAL_WEBSITES.toLocaleString()} websites across ${TOTAL_CAREERS} careers · from $79</p>
+      <p class="text-xs text-slate-600 mb-4">${TOTAL_WEBSITES.toLocaleString()} websites across ${TOTAL_CAREERS} careers · from $99</p>
       <a href="#/" class="inline-block bg-sky-600 text-white font-bold py-3 px-6 rounded-xl text-xs">Browse builds →</a>
     </div>
     <div class="mt-10 pt-8 border-t border-sky-200">
@@ -2970,9 +2914,8 @@ function renderFAQ(){
   const faqs = [
     ['What exactly am I buying?','A complete, self-contained website bundle for one career — in three different designs. Each design is its own folder with 7 files: index.html (full site), funnel.html (lead-capture page), thank-you.html, README.md, LICENSE.txt, robots.txt and sitemap.xml. That is 21 files per career, all plain HTML/CSS/JS. No frameworks, no build step.'],
     ['What are the 3 designs?','Modern (gradient hero, floating form card, soft rounded cards), Classic (editorial single-column, serif typography, minimal) and Bold (full-bleed accent hero, dark sections, high contrast). Each has its own accent colour, so they look genuinely different.'],
-    ['How does the 3-Career Bundle work?','When you buy the 3-Career Bundle for $197 you receive 3 credits. Each credit unlocks one career of your choice — 3 designs and 21 files. Simply click Buy on any career and confirm you want to use a credit. Credits never expire. Track your balance in My Library.'],
     ['Can I preview before buying?','Yes — all three designs. Click the Preview button on any career and switch between Modern, Classic and Bold with tabs at the top of the modal. The preview runs the actual generated website in an iframe.'],
-    ['What are the four pricing tiers?','Single Career Bundle is $79 for one career (3 designs). The 3-Career Bundle is $197 for 3 credits — spend them on any 3 careers you choose (9 designs total). The Category Bundle is $597 and unlocks every career inside one category — up to 120 careers × 3 designs = 360 websites. The Full Agency Vault is $1,997 and unlocks all 1,000 careers × 3 designs = 3,000 websites plus an agency license.'],
+    ['What are the three pricing tiers?','Single Career Bundle is $99 for one career (3 designs). The Category Bundle is $597 and unlocks every career inside one category — up to 120 careers × 3 designs = 360 websites. The Full Agency Vault is $1,997 and unlocks all 1,000 careers × 3 designs = 3,000 websites plus an agency license.'],
     ['Can I rebrand and sell it to a client?','Yes. Rebrand any of the 3 designs, then deploy it for yourself or sell the finished site to a client as a paid project. You may not resell the raw template itself as a template.'],
     ['How do I deploy it?','Unzip the bundle, pick a design folder, go to app.netlify.com/drop, and drag the folder onto the page. Live in about 20 seconds with free SSL. Cloudflare Pages, GitHub Pages and classic FTP all work too. Full instructions in the README.'],
     ['Do I need to know how to code?','No. Everything you need to change is plain text — the business name, phone, city and copy are all search-and-replace. Colours live in a small CSS block with four values. If you can edit a document, you can edit this.'],
@@ -2981,7 +2924,7 @@ function renderFAQ(){
     ['What is the refund policy?','30-day money-back guarantee. Email hello@pnmoneymaking.com within 30 days and we refund it, no questions asked.'],
     ['How big is the Full Vault download?','The compact vault (1 design × 1,000 careers) is a large archive — plan on a couple of minutes. The full 3-design vault is too big for one browser download, so we ship it per category: 13 category ZIPs, each with all 3 designs. Download whichever category you need at any time.'],
     ['Will you add more careers?','Yes. The catalog expands, and anyone who owns the Full Vault gets every future build added free, forever.'],
-    ['Can I use this for multiple client projects?','Yes. The Single, 3-Career and Category tiers cover unlimited personal and client use. The Full Vault adds an explicit agency license and covers all 3,000 builds.'],
+    ['Can I use this for multiple client projects?','Yes. The Single and Category tiers cover unlimited personal and client use. The Full Vault adds an explicit agency license and covers all 3,000 builds.'],
     ['Is my bundle watermarked?','Yes. Every bundle you download carries a unique License ID that is stamped into LICENSE.txt, README.md, and a top-of-file comment in every generated index.html. This lets us trace unauthorized resale under DMCA. It does not limit your own use of the sites you build.'],
     ['How do I report piracy?','Email piracy@pnmoneymaking.com with the URL where you found KK WebCodes templates being sold or shared without a license. We pursue every report under DMCA.'],
     ['How do I contact support?','Email hello@pnmoneymaking.com, use the WhatsApp button, or open the KK chat panel in the bottom-right corner.']
@@ -3249,7 +3192,7 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 console.log('%c💻 KK WebCodes loaded', 'color:#0284c7; font-size:16px; font-weight:bold;');
 console.log('%c' + TOTAL_CAREERS + ' careers × ' + DESIGN_VARIANTS.length + ' designs = ' + TOTAL_WEBSITES + ' websites', 'color:#64748b; font-size:11px;');
-console.log('%c💰 Pricing: single $79 · triple $197 (3 credits) · category $597 · vault $1,997', 'color:#10b981; font-size:11px; font-weight:bold;');
+console.log('%c💰 Pricing: single $99 · category $597 · vault $1,997', 'color:#10b981; font-size:11px; font-weight:bold;');
 console.log('%c🛡️ License watermarking active · report piracy: ' + CONFIG.PIRACY_EMAIL, 'color:#f59e0b; font-size:11px; font-weight:bold;');
 </script>
 </body>
