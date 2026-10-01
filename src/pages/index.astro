@@ -1,6 +1,9 @@
 ---
-// Homepage — product page
-const productHtml = await fetch(new URL('/product-page.html', Astro.url)).then(r => r.text());
+import fs from 'node:fs/promises';
+import path from 'node:path';
+
+const productPath = path.join(process.cwd(), 'public', 'product-page.html');
+const productHtml = await fs.readFile(productPath, 'utf-8');
 ---
 
 <Fragment set:html={productHtml} />
