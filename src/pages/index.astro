@@ -1,9 +1,16 @@
 ---
-import fs from 'node:fs/promises';
-import path from 'node:path';
-
-const productPath = path.join(process.cwd(), 'public', 'product-page.html');
-const productHtml = await fs.readFile(productPath, 'utf-8');
+// Homepage: serve the static product page from /public
 ---
-
-<Fragment set:html={productHtml} />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>KK WebCodes — DFY Websites & Code for 1,000 Careers</title>
+<meta http-equiv="refresh" content="0; url=/product-page.html">
+</head>
+<body>
+<p style="font-family: sans-serif; padding: 40px; text-align: center;">
+Loading product page… <a href="/product-page.html">Click here if it doesn't load</a>
+</p>
+</body>
+</html>
